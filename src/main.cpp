@@ -1,22 +1,26 @@
 #include <Arduino.h>
 #include "GyverButton.h"
 
+// Hardware settigs
 #define ledsCount 3 // 2 (красный/зеленый) или 3 (красный/желтый/зеленый)
 #define redLedPin 1
 #define yellowLedPin 4
 #define greenLedPin 2
 #define buttonPin 3
 
+// Software settings
 #define lightChangeTimeoutMs 2000
+#define isButtonControl true
+#define isAutoControl true
 
 bool isRed = true;
 bool isGreen = false;
-bool isAuto = true;
+bool isAutoMode = true;
 
 GButton button(buttonPin, LOW_PULL, NORM_OPEN);
 long lastLightChangeMs = 0;
 
-void nextLight()
+void setNextLights()
 {
 	if (ledsCount == 2)
 	{
@@ -41,7 +45,7 @@ void nextLight()
 	}
 }
 
-void currentLights()
+void showCurrentLights()
 {
 	digitalWrite(redLedPin, isRed ? HIGH : LOW);
 	if (ledsCount == 3)
@@ -53,6 +57,9 @@ void currentLights()
 
 void setup()
 {
+	isAutoMode = isAutoControl;
+	lastLightChangeMs = millis();
+
 	pinMode(redLedPin, OUTPUT);
 	if (ledsCount == 3)
 	{
@@ -63,16 +70,26 @@ void setup()
 
 void loop()
 {
-	// button.tick();
-	// if (button.isClick())
-	// {
-	// 	nextLight();
-	// }
+	button.tick();
 
-	if (millis() - lastLightChangeMs >= lightChangeTimeoutMs)
+	if (button.isDouble())
 	{
-		lastLightChangeMs = millis();
-		nextLight();
+		isAutoMode = !isAutoMode;
+		return;
 	}
-	currentLights();
+
+	if (isAutoMode)
+	{
+		if (millis() - lastLightChangeMs >= lightChangeTimeoutMs)
+		{
+			lastLightChangeMs = millis();
+			setNextLights();
+		}
+	}
+	else if (button.isClick())
+	{
+		setNextLights();
+	}
+
+	showCurrentLights();
 }
