@@ -2,19 +2,19 @@
 #include "GyverButton.h"
 
 // Hardware settigs
-#define ledsCount 3 // 2 (красный/зеленый) или 3 (красный/желтый/зеленый)
+#define LEDS_COUNT 3 // 2 (красный/зеленый) или 3 (красный/желтый/зеленый)
 
-#define redLedPin 1
-#define yellowLedPin 2
-#define greenLedPin 3
+#define RED_LED_PIN 1
+#define YELLOW_LED_PIN 2
+#define GREEN_LED_PIN 3
 
-#define buttonPin 4
+#define BUTTON_PIN 4
 
 // Software settings
 #define LIGHT_CHANGE_TIMEOUT_MS 2000
 #define SWITCH_WITH_BLINKS true
-#define isButtonControl true
-#define shouldStartInAutoMode true
+#define IS_BUTTON_CONTROL true
+#define SHOULD_START_IN_AUTO_MODE true
 
 #define	RED_LIGHT_TIMEOUT_MS 10000
 #define	RED_YELLOW_LIGHT_TIMEOUT_MS 2000
@@ -30,7 +30,7 @@ bool isGreenBlinking = false;
 
 bool isAutoMode = true;
 
-GButton button(buttonPin, LOW_PULL, NORM_OPEN);
+GButton button(BUTTON_PIN, LOW_PULL, NORM_OPEN);
 unsigned long nextLightChangeTimeMs = 0;
 
 void blinkLight(uint8_t pin, uint8_t count, int timeoutMs)
@@ -44,12 +44,12 @@ void blinkLight(uint8_t pin, uint8_t count, int timeoutMs)
 
 void setNextLights()
 {
-	if (ledsCount == 2)
+	if (LEDS_COUNT == 2)
 	{
 		isRed = !isRed;
 		isGreen = !isGreen;
 	}
-	else if (ledsCount == 3)
+	else if (LEDS_COUNT == 3)
 	{
 		if (isRed)
 		{
@@ -77,7 +77,7 @@ void setNextLights()
 		}
 		else if (isGreen)
 		{
-			blinkLight(greenLedPin, GREEN_LIGHT_BLINK_COUNT, GREEN_LIGHT_BLINK_TIMEOUT_MS);
+			blinkLight(GREEN_LED_PIN, GREEN_LIGHT_BLINK_COUNT, GREEN_LIGHT_BLINK_TIMEOUT_MS);
 			isRed = false;
 			isYellow = true;
 			isGreen = false;
@@ -88,25 +88,27 @@ void setNextLights()
 
 void showCurrentLights()
 {
-	digitalWrite(redLedPin, isRed ? HIGH : LOW);
-	if (ledsCount == 3)
+	digitalWrite(RED_LED_PIN, isRed ? HIGH : LOW);
+	if (LEDS_COUNT == 3)
 	{
-		digitalWrite(yellowLedPin, isYellow ? HIGH : LOW);
+		digitalWrite(YELLOW_LED_PIN, isYellow ? HIGH : LOW);
 	}
-	digitalWrite(greenLedPin, isGreen ? HIGH : LOW);
+	digitalWrite(GREEN_LED_PIN, isGreen ? HIGH : LOW);
 }
 
 void setup()
 {
-	isAutoMode = shouldStartInAutoMode;
+	isAutoMode = SHOULD_START_IN_AUTO_MODE;
 
-	pinMode(redLedPin, OUTPUT);
-	if (ledsCount == 3)
+	pinMode(RED_LED_PIN, OUTPUT);
+	if (LEDS_COUNT == 3)
 	{
-		pinMode(yellowLedPin, OUTPUT);
+		pinMode(YELLOW_LED_PIN, OUTPUT);
 	}
-	pinMode(greenLedPin, OUTPUT);
+	pinMode(GREEN_LED_PIN, OUTPUT);
 	nextLightChangeTimeMs = millis() + RED_LIGHT_TIMEOUT_MS;
+
+	pinMode(BUTTON_PIN, INPUT_PULLUP);
 }
 
 void loop()
