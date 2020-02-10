@@ -16,12 +16,12 @@
 #define IS_BUTTON_CONTROL true
 #define SHOULD_START_IN_AUTO_MODE true
 
-#define	RED_LIGHT_TIMEOUT_MS 10000
-#define	RED_YELLOW_LIGHT_TIMEOUT_MS 2000
-#define	GREEN_LIGHT_TIMEOUT_MS 10000
+#define RED_LIGHT_TIMEOUT_MS 10000
+#define RED_YELLOW_LIGHT_TIMEOUT_MS 2000
+#define GREEN_LIGHT_TIMEOUT_MS 10000
 #define GREEN_LIGHT_BLINK_TIMEOUT_MS 750
-#define	GREEN_LIGHT_BLINK_COUNT 3
-#define	YELLOW_LIGHT_TIMEOUT_MS 2000
+#define GREEN_LIGHT_BLINK_COUNT 3
+#define YELLOW_LIGHT_TIMEOUT_MS 2000
 
 bool isRed = true;
 bool isYellow = false;
@@ -68,7 +68,7 @@ void setNextLights()
 				nextLightChangeTimeMs = millis() + RED_YELLOW_LIGHT_TIMEOUT_MS;
 			}
 		}
-		else if(isYellow)
+		else if (isYellow)
 		{
 			isRed = true;
 			isYellow = false;
@@ -108,7 +108,10 @@ void setup()
 	pinMode(GREEN_LED_PIN, OUTPUT);
 	nextLightChangeTimeMs = millis() + RED_LIGHT_TIMEOUT_MS;
 
-	pinMode(BUTTON_PIN, INPUT_PULLUP);
+	if (IS_BUTTON_CONTROL)
+	{
+		pinMode(BUTTON_PIN, INPUT_PULLUP);
+	}
 }
 
 void loop()
